@@ -3,17 +3,15 @@ const spies = require('chai-spies');
 const chai = require('chai');
 chai.use(spies);
 let {Page} = require('../models');
+let {db} = require('../models');
 
 
 let page;
 
-beforeEach(function() {
-  page = Page.build();
-})
-
-
-
 describe('Page model', function() {
+  before(function() {
+    return Page.sync({force: true});
+  })
   // describe('the validations', function() {
   //   it('errors without title')
 
@@ -23,6 +21,9 @@ describe('Page model', function() {
   // })
 
   describe('the virtuals', function() {
+    beforeEach(function() {
+      page = Page.build();
+    });
     describe('route', function() {
       it('returns a valid url, prepended by "/wiki/"', function() {
         page.urlTitle = 'tester_url_title';
@@ -46,10 +47,38 @@ describe('Page model', function() {
 //       it('it turns the title into a urlTitle')
 //   })
 
-//   describe('class methods', function() {
-//     describe('find by tag')
-//       it('finds a page by its tag')
-//   })
+
+
+  describe('class methods', function() {
+    beforeEach(function(done) {
+      Page.create({
+        title: 'new title',
+        content: 'I am some content',
+        tags: ['tag1', 'tag2']
+      }).then(function() {
+        done();
+      })
+      .catch(done);
+    });
+    describe('find by tag', function() {
+      it('finds a page by its tag', function(done) {
+        Page.findByTag('tag1')
+        .then(function(pages) {
+          expect(pages).to.have.lengthOf(1);
+          done();
+        })
+        .catch(done);
+      })
+      it('Does not return pages w/o that tag', function(done) {
+        Page.findByTag('tag3')
+        .then(function(pages) {
+          expect(pages).to.have.lengthOf(0);
+          done();
+        })
+        .catch(done);
+      })
+    })
+  })
 
 //   describe('instance methods', function() {
 //     describe('find similar')

@@ -34,6 +34,3 @@ describe('spying on stuff', function() {
     expect(logNum).to.have.been.called.exactly(array.length);
   })
 })
-
-
-

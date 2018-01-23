@@ -4,6 +4,7 @@ var morgan = require('morgan');
 var bodyParser = require('body-parser');
 
 var app = express();
+const models = require('./models/');
 var wikiRouter = require('./routes/wiki');
 var usersRouter = require('./routes/users');
 
